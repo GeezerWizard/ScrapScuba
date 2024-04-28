@@ -68,14 +68,6 @@ public class BoatMovement : MonoBehaviour
         if (Input.GetMouseButton(0) && allowMoving == true)
         {
             targetPosition = mouseInputMovement.GetTargetPosition(layerMask);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Debug.DrawRay(ray.origin, ray.direction * 100, Color.yellow);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray.origin, ray.direction, out hit, 100, layerMask))
-            {
-                targetPosition = hit.point;
-            }
 
             if (GetDistance() > clickDistanceToStartMoving)
             {
