@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BoatMovement : MonoBehaviour
 {
+    MouseInputMovement mouseInputMovement;
+
     Vector3 targetPosition;
     int layerMask;
 
@@ -19,19 +21,27 @@ public class BoatMovement : MonoBehaviour
     float slowDownDistance, stopDistance;
     float distance;
 
+    //Turning variables
     [SerializeField]
     float turnRate;
-
     [SerializeField]
     AnimationCurve turnRateCurve;
     float turnRateModifier;
     float turnMagnitude;
 
     bool moving = false;
+    bool allowMoving = true;
+    public bool AllowMoving 
+    { 
+        get 
+        { return allowMoving; } 
+        set 
+        { allowMoving = value; } 
+    }
 
+    //Speed variables
     [SerializeField]
     float speed;
-
     [SerializeField]
     AnimationCurve speedRateCurve;
     float speedModifier;
@@ -39,23 +49,25 @@ public class BoatMovement : MonoBehaviour
 
     void Start()
     {
+        mouseInputMovement = new MouseInputMovement();
         layerMask = 1 << 4;
         currentDirection = initialDirection;
         speedModRate = 1;
         turnMagnitude = 1;
     }
 
-    private void OnDrawGizmos()
+/*    private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, clickDistanceToStartMoving);
         Gizmos.DrawLine(transform.position, targetPosition);
-    }
+    }*/
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && allowMoving == true)
         {
+            targetPosition = mouseInputMovement.GetTargetPosition(layerMask);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Debug.DrawRay(ray.origin, ray.direction * 100, Color.yellow);
 
@@ -68,7 +80,6 @@ public class BoatMovement : MonoBehaviour
             if (GetDistance() > clickDistanceToStartMoving)
             {
                 moving = true;
-                print("moving = " + moving);
             }
         }
 
@@ -100,7 +111,6 @@ public class BoatMovement : MonoBehaviour
         else
         {
             moving = false;
-            print("moving = " + moving);
         }
     }
 
